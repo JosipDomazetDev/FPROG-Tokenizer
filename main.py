@@ -35,3 +35,21 @@ def process_chapters(chapters: List[str], war_terms, peace_terms) -> List[Tuple[
     ), chapters))
 
 
+# Extract chapters from the book
+chapters = re.split(r'\bchapter\b \d+', ' '.join(book_content), flags=re.IGNORECASE)
+chapter_densities = process_chapters(chapters, war_terms, peace_terms)
+
+# Step 9: Categorize chapters
+categorize_chapters = lambda densities: ['war' if war > peace else 'peace' for war, peace in densities]
+
+# Step 10: Get print results
+get_print_results = lambda chapter_densities: [f"Chapter {i + 1}: {categorized_chapter}-related" for
+                                               i, categorized_chapter in
+                                               enumerate(categorize_chapters(chapter_densities))]
+
+# Step 10b: Print results
+if __name__ == '__main__':
+    get_print_results(chapter_densities)
+    # categorized_chapters = categorize_chapters(chapter_densities)
+    # for i, category in enumerate(categorized_chapters):
+    #     print(f"Chapter {i + 1}: {category}-related")

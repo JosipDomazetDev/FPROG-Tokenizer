@@ -44,6 +44,23 @@ class TestCase(unittest.TestCase):
 
         assert results == expected_results, f"Expected {expected_results}, but got {results}"
 
+    def test_categorize_chapters(self):
+        densities = [(0.25, 0.25), (0.4, 0.3), (0.2, 0.5), (0.5, 0.5)]
+        expected_results = ["peace", "war", "peace", "peace"]
+
+        results = categorize_chapters(densities)
+
+        assert results == expected_results, f"Expected {expected_results}, but got {results}"
+
+    def test_get_print_results(self):
+        densities = [(0.25, 0.25), (0.4, 0.3), (0.2, 0.5), (0.5, 0.5)]
+        expected_results = ['Chapter 1: peace-related', 'Chapter 2: war-related', 'Chapter 3: peace-related',
+                            'Chapter 4: peace-related']
+
+        results = get_print_results(densities)
+
+        assert results == expected_results, f"Expected {expected_results}, but got {results}"
+
 
 if __name__ == '__main__':
     unittest.main()
