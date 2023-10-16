@@ -1,5 +1,4 @@
 import re
-from functools import reduce
 from typing import List, Dict, Tuple
 
 
@@ -10,31 +9,46 @@ def read_file(filename):
 
 
 # Step 3: Tokenize the text
-tokenize = lambda text: re.findall(r'\b\w+\b', text.lower())
+tokenize = lambda text: re.findall(r'\b\w+\b', text)
 
 # Step 4: Filter words
 filter_words = lambda words, filter_list: list(
     filter(lambda current_filter_word: current_filter_word in words, filter_list))
 
 # Step 5: Count occurrences
-count_occurrences = lambda words: reduce(lambda acc, word: {**acc, **{word: acc.get(word, 0) + 1}}, words, {})
+count_occurrences = lambda text_words, words_to_be_counted: {word: text_words.count(word) for word in
+                                                             words_to_be_counted}
 
 
 # Step 6: Calculate term density
 def calculate_density(occurrences: Dict[str, int], total_words: int) -> float:
+    if total_words == 0:
+        return 0
+
     return sum(occurrences.values()) / total_words
 
 
 # Step 8: Process chapters
 def process_chapters(chapters: List[str], war_terms, peace_terms) -> List[Tuple[float, float]]:
-    return list(map(lambda chapter: (
-        calculate_density(count_occurrences(filter_words(tokenize(chapter), war_terms)), len(tokenize(chapter))),
-        calculate_density(count_occurrences(filter_words(tokenize(chapter), peace_terms)), len(tokenize(chapter)))
-    ), chapters))
+    results = []
+
+    for chapter in chapters:
+        tokenized_chapter = tokenize(chapter)
+
+        war_density = calculate_density(
+            count_occurrences(tokenized_chapter, filter_words(tokenized_chapter, war_terms)), len(tokenized_chapter))
+        peace_density = calculate_density(
+            count_occurrences(tokenized_chapter, filter_words(tokenized_chapter, peace_terms)), len(tokenized_chapter))
+        results.append((war_density, peace_density))
+
+    return results
 
 
 # Step 9: Categorize chapters
-categorize_chapters = lambda densities: ['war' if war > peace else 'peace' for war, peace in densities]
+def categorize_chapters(density_tuples):
+    tolerance = 0
+    return ['war' if war > peace else 'peace' for war, peace in density_tuples]
+
 
 # Step 10: Get print results
 get_print_results = lambda chapter_densities: [f"Chapter {i + 1}: {categorized_chapter}-related" for
@@ -49,7 +63,7 @@ def get_tolstoy_lines():
     peace_terms = set(tokenize(' '.join(read_file('./res/peace_terms.txt'))))
 
     # Extract chapters from the book
-    chapters = re.split(r'\bchapter\b \d+', ' '.join(book_content), flags=re.IGNORECASE)
+    chapters = re.split(r'\bchapter\b \d+', ' '.join(book_content), flags=re.IGNORECASE)[1:]
     chapter_densities = process_chapters(chapters, war_terms, peace_terms)
 
     return get_print_results(chapter_densities)
