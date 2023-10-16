@@ -61,6 +61,18 @@ class TestCase(unittest.TestCase):
 
         assert results == expected_results, f"Expected {expected_results}, but got {results}"
 
+    def test_complete(self):
+        tolstoy_lines = get_tolstoy_lines()
+        output_lines = read_file("./res/output.txt")
+
+        self.assertTrue(len(tolstoy_lines), len(output_lines))
+
+        print(len(tolstoy_lines))
+        print(len(output_lines))
+
+        for line1, line2 in zip(tolstoy_lines, output_lines):
+            assert line1 == line2, f"Expected line: {line1}, but got: {line2}"
+
 
 if __name__ == '__main__':
     unittest.main()
