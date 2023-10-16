@@ -19,5 +19,31 @@ class TestCase(unittest.TestCase):
         occurrences = count_occurrences(words)
         self.assertEqual(occurrences, {"apple": 1, "banana": 2, "cherry": 1, "date": 1})
 
+    def test_calculate_density(self):
+        word_occurrences = {"apple": 2, "banana": 3, "cherry": 1}
+        total_words = 10
+
+        expected_density = 0.6  # (2 + 3 + 1) / 10
+
+        density = calculate_density(word_occurrences, total_words)
+
+        assert density == expected_density, f"Expected {expected_density}, but got {density}"
+
+    def test_process_chapters(self):
+        chapters = ["This is a test chapter.", "Another test chapter.", "Yet another chapter."]
+        war_terms = {"test"}
+        peace_terms = {"another"}
+
+        expected_results = [
+            (0.2, 0.0),
+            (0.3333333333333333, 0.3333333333333333),
+            (0.0, 0.3333333333333333)
+        ]
+
+        results = process_chapters(chapters, war_terms, peace_terms)
+
+        assert results == expected_results, f"Expected {expected_results}, but got {results}"
+
+
 if __name__ == '__main__':
     unittest.main()
