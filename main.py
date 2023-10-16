@@ -1,16 +1,17 @@
-# This is a sample Python script.
+from functools import reduce
+from typing import List, Dict, Tuple
+import re
 
-# Press Umschalt+F10 to execute it or replace it with your code.
-# Press Double Shift to search everywhere for classes, files, tool windows, actions, and settings.
+# Step 2: Read files
+read_file = lambda filename: [line.strip() for line in open(filename, 'r')]
+
+# Step 3: Tokenize the text
+tokenize = lambda text: re.findall(r'\b\w+\b', text.lower())
+
+# Step 4: Filter words
+filter_words = lambda words, filter_list: list(filter(lambda word: word in filter_list, words))
+
+# Step 5: Count occurrences
+count_occurrences = lambda words: reduce(lambda acc, word: {**acc, **{word: acc.get(word, 0) + 1}}, words, {})
 
 
-def print_hi(name):
-    # Use a breakpoint in the code line below to debug your script.
-    print(f'Hi, {name}')  # Press Strg+F8 to toggle the breakpoint.
-
-
-# Press the green button in the gutter to run the script.
-if __name__ == '__main__':
-    print_hi('PyCharm')
-
-# See PyCharm help at https://www.jetbrains.com/help/pycharm/
