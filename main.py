@@ -46,7 +46,6 @@ def process_chapters(chapters: List[str], war_terms, peace_terms) -> List[Tuple[
 
 # Step 9: Categorize chapters
 def categorize_chapters(density_tuples):
-    tolerance = 0
     return ['war' if war > peace else 'peace' for war, peace in density_tuples]
 
 

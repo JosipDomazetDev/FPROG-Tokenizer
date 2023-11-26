@@ -64,11 +64,11 @@ class TestCase(unittest.TestCase):
         assert results == expected_results, f"Expected {expected_results}, but got {results}"
 
     def test_chapter2(self):
-        book_content = re.split(r'\bchapter\b \d+', ' '.join(read_file('./res/chapter2.txt')))[-1]
+        book_content = re.split(r'\bchapter\b \d+', ' '.join(read_file('chapter2.txt')))[-1]
         book_content_tokenized = tokenize(book_content)
 
-        war_terms = set(tokenize(' '.join(read_file('./res/war_terms.txt'))))
-        peace_terms = set(tokenize(' '.join(read_file('./res/peace_terms.txt'))))
+        war_terms = set(tokenize(' '.join(read_file('../res/war_terms.txt'))))
+        peace_terms = set(tokenize(' '.join(read_file('../res/peace_terms.txt'))))
 
         count_occurrences_war = count_occurrences(book_content_tokenized,
                                                   filter_words(book_content_tokenized, war_terms))
@@ -79,11 +79,11 @@ class TestCase(unittest.TestCase):
         self.assertEqual(count_occurrences_peace, {'smile': 3, 'peace': 1})
 
     def test_chapter8(self):
-        book_chapters = re.split(r'\bchapter\b \d+', ' '.join(read_file('res/chapter8.txt')))
+        book_chapters = re.split(r'\bchapter\b \d+', ' '.join(read_file('chapter8.txt')))
         book_content_tokenized = tokenize(book_chapters[-1])
 
-        war_terms = set(tokenize(' '.join(read_file('./res/war_terms.txt'))))
-        peace_terms = set(tokenize(' '.join(read_file('./res/peace_terms.txt'))))
+        war_terms = set(tokenize(' '.join(read_file('../res/war_terms.txt'))))
+        peace_terms = set(tokenize(' '.join(read_file('../res/peace_terms.txt'))))
 
         count_occurrences_war = count_occurrences(book_content_tokenized,
                                                   filter_words(book_content_tokenized, war_terms))
@@ -93,24 +93,10 @@ class TestCase(unittest.TestCase):
         self.assertEqual(count_occurrences_war, {'general': 1, 'war': 2})
         self.assertEqual(count_occurrences_peace, {'calm': 1, 'freedom': 1, 'love': 1, 'smile': 2, 'supper': 2})
 
-        print(process_chapters(book_chapters, war_terms, peace_terms))
+        expected = [(0.0024311183144246355, 0.005672609400324149)]
+        result = process_chapters(book_chapters, war_terms, peace_terms)
 
-        print(calculate_density(count_occurrences_war, len(book_content_tokenized)))
-        print(calculate_density(count_occurrences_peace, len(book_content_tokenized)))
-
-        # Is peace leaning but is war in output.txt
-
-    def test_complete(self):
-        tolstoy_lines = get_tolstoy_lines()
-        output_lines = read_file("./res/output.txt")
-
-        self.assertTrue(len(tolstoy_lines), len(output_lines))
-
-        print(len(tolstoy_lines))
-        print(len(output_lines))
-
-        for line1, line2 in zip(tolstoy_lines, output_lines):
-            assert line1 == line2, f"Expected line: {line1}, but got: {line2}"
+        self.assertEqual(result, expected)
 
 
 if __name__ == '__main__':
